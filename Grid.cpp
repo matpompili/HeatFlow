@@ -1,4 +1,4 @@
-#include "Grid.h"
+#include "Grid.hpp"
 
 Grid::Grid(int size, double lenght) {
   if ((size == 0) || (lenght == 0)) {
