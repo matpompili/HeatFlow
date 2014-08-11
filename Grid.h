@@ -9,6 +9,8 @@ public:
   Grid(int size, double lenght);
   ~Grid();
 
+  void nextStep(double dt);
+
   void setTemperature(int cell, double t);
   void setTemperature(double pos, double t);
   void setAllTemperatures(double t);
@@ -35,5 +37,6 @@ private:
   int cellFromPos (double pos);
   double posFromCell (int cell);
   void fixBounds();
+  void evaluateLagrangian();
 };
 #endif

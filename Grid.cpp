@@ -26,6 +26,19 @@ Grid::~Grid() {
   }
 }
 
+void Grid::nextStep(double dt) {
+  this->evaluateLagrangian();
+  double tTemp;
+  for(int cell = 0; cell < _size; cell++)
+  {
+    if(!this->getFixed(cell)){
+      tTemp  = this->getTemperature(cell);
+      tTemp += dt*this->getLagrangian(cell);
+      this->setTemperature(cell, tTemp);
+    }
+  }
+}
+
 void Grid::setTemperature(int cell, double t) {
   *(_values + cell + 1) = fabs(t);
   this->fixBounds();
@@ -94,4 +107,16 @@ double Grid::posFromCell (int cell) {
 void Grid::fixBounds() {
   *_values = *(_values + 1);
   *(_values + _size + 1) = *(_values + _size);
+}
+
+void Grid::evaluateLagrangian() {
+  this->fixBounds(); //Just to be sure...
+  double tempLagr;
+  for(int cell = 0; cell < _size; cell++)
+  {
+    tempLagr  = this->getTemperature(cell-1);
+    tempLagr -= 2.* this->getTemperature(cell);
+    tempLagr += this->getTemperature(cell+1);
+    *(_lagrange + cell + 1) = tempLagr;
+  }
 }
