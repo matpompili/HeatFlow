@@ -2,6 +2,7 @@
 #define __GRID_H__
 
 #include <iostream>
+#include <stdlib.h> 
 #include <cmath>
 
 class Grid {

@@ -1,5 +1,7 @@
 #include "Grid.hpp"
 
+using namespace std;
+
 Grid::Grid(int size, double lenght) {
   if ((size == 0) || (lenght == 0)) {
     //TODO: EXIT HERE AND ERROR
