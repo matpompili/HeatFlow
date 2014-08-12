@@ -5,7 +5,7 @@ int main() {
   Grid *linTest = new Grid(20, 1.);
   linTest->setAllTemperatures(300.);
   linTest->setTemperature(0, 330.);
-  //linTest->setFixed(0, true);
+  linTest->setFixed(0, true);
   linTest->setTemperature(19, 270.);
   //linTest->setFixed(19, true);
   //linTest->setFixed(5,true);
@@ -16,10 +16,10 @@ int main() {
       std::cout << i << " " << linTest->getTemperature(i) << std::endl;
     }
     std::cout << std::endl;
-    for(size_t i = 0; i < 20; i++)
+    for(size_t i = 0; i < 200; i++)
     {
       linTest->nextStep(dt);
+      count++;
     }
-    count++;
   }
 }

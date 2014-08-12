@@ -8,11 +8,12 @@ Grid::Grid(int size, double lenght) {
   }
   _size = abs(size);
   _step = lenght / size;
-  _values = (double*) calloc(_size + 2, sizeof(double));
-  _lagrange = (double*) calloc(_size + 2, sizeof(double));
-  _fixed = (bool*) calloc(_size + 2, sizeof(bool));
-  if((_values != NULL) && (_lagrange != NULL) && (_fixed != NULL))
-  {
+  _cell = (Cell*) calloc((_size + 2)*(_size + 2), sizeof(Cell));
+  //_values = (double*) calloc(_size + 2, sizeof(double));
+  //_lagrange = (double*) calloc(_size + 2, sizeof(double));
+  //_fixed = (bool*) calloc(_size + 2, sizeof(bool));
+  //if((_values != NULL) && (_lagrange != NULL) && (_fixed != NULL)) {
+  if(_cell != NULL) {
     _allocated = true;
   } else {
     _allocated = false;
@@ -22,17 +23,17 @@ Grid::Grid(int size, double lenght) {
 
 Grid::~Grid() {
   if(_allocated) {
-    free(_values);
-    free(_lagrange);
-    free(_fixed);
+    //free(_values);
+    //free(_lagrange);
+    //free(_fixed);
+    free(_cell);
   }
 }
 
 void Grid::nextStep(double dt) {
   this->evaluateLagrangian();
   double tTemp;
-  for(int cell = 0; cell < _size; cell++)
-  {
+  for(int cell = 0; cell < _size; cell++) {
     if(!this->getFixed(cell)){
       tTemp  = this->getTemperature(cell);
       tTemp += dt*this->getLagrangian(cell);
@@ -41,26 +42,28 @@ void Grid::nextStep(double dt) {
   }
 }
 
-void Grid::setTemperature(int cell, double t) {
-  *(_values + cell + 1) = fabs(t);
+void Grid::setTemperature(int i, int j, double t) {
+  this->getCell(i,j)->temperature = fabs(t);
   this->fixBounds();
 }
 
-void Grid::setTemperature(double pos, double t) {
-  this->setTemperature(cellFromPos(pos), t);
+void Grid::setTemperature(double x, double y, double t) {
+  this->setTemperature(cellFromPos(x), cellFromPos(y), t)
+  //this->setTemperature(cellFromPos(pos), t);
 }
 
 void Grid::setAllTemperatures(double t) {
   t = fabs(t);
-  for(size_t i = 0; i < _size; i++)
-  {
-    *(_values + i + 1) = t;
+  for(size_t i = 0; i < _size; i++) {
+    for(size_t j = 0; j < _size; j++) {
+      (_cell + i + 1)->temperature = t;
+    }
   }
   this->fixBounds();
 }
 
 void Grid::setFixed(int cell, bool f) {
-  *(_fixed + cell + 1) = f;
+  (_cell + cell + 1)->fixed = f;
 }
 
 void Grid::setFixed(double pos, bool f) {
@@ -70,12 +73,12 @@ void Grid::setFixed(double pos, bool f) {
 void Grid::setAllFixed(bool f) {
   for(size_t i = 0; i < _size; i++)
   {
-    *(_fixed + i + 1) = f;
+    (_cell + i + 1)->fixed = f;
   }
 }
 
 double Grid::getTemperature(int cell) {
-  return *(_values + cell + 1);
+  return (_cell + cell + 1)->temperature;
 }
 
 double Grid::getTemperature(double pos) {
@@ -83,7 +86,7 @@ double Grid::getTemperature(double pos) {
 }
 
 double Grid::getLagrangian(int cell) {
-  return *(_lagrange + cell + 1);
+  return (_cell + cell + 1)->lagrange;
 }
 
 double Grid::getLagrangian(double pos) {
@@ -91,7 +94,7 @@ double Grid::getLagrangian(double pos) {
 }
 
 bool Grid::getFixed(int cell) {
-  return *(_fixed + cell + 1);
+  return (_cell + cell + 1)->fixed;
 }
 
 bool Grid::getFixed(double pos) {
@@ -107,18 +110,22 @@ double Grid::posFromCell (int cell) {
 }
 
 void Grid::fixBounds() {
-  *_values = *(_values + 1);
-  *(_values + _size + 1) = *(_values + _size);
+  _cell->temperature = (_cell + 1)->temperature;
+  (_cell + _size + 1)->temperature = (_cell + _size)->temperature;
 }
 
 void Grid::evaluateLagrangian() {
   this->fixBounds(); //Just to be sure...
   double tempLagr;
-  for(int cell = 0; cell < _size; cell++)
-  {
+  for(int cell = 0; cell < _size; cell++) {
     tempLagr  = this->getTemperature(cell-1);
     tempLagr -= 2.* this->getTemperature(cell);
     tempLagr += this->getTemperature(cell+1);
-    *(_lagrange + cell + 1) = tempLagr;
+    (_cell + cell + 1)->lagrange = tempLagr;
   }
+}
+
+Cell* Grid::getCell(int i, int j) {
+  if ((j>=-1 && j<?????))
+  return (_cell + (_size + 2) * (j + 1) + i + 1);
 }

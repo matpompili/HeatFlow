@@ -1,9 +1,14 @@
-#ifndef __GRID_H__
-#define __GRID_H__
+#ifndef __GRID_HPP__
+#define __GRID_HPP__
 
 #include <iostream>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <cmath>
+
+typedef struct {
+  double temperature, lagrange, alfa;
+  bool fixed;
+} Cell;
 
 class Grid {
 public:
@@ -12,8 +17,8 @@ public:
 
   void nextStep(double dt);
 
-  void setTemperature(int cell, double t);
-  void setTemperature(double pos, double t);
+  void setTemperature(int i, int j, double t);
+  void setTemperature(double x, double y, double t);
   void setAllTemperatures(double t);
   void setFixed(int cell, bool f);
   void setFixed(double pos, bool f);
@@ -30,10 +35,15 @@ public:
   int getSize() {return (int)_size;}
   double getStep() {return _step;}
 
+  Cell* getCell(int i, int j);
+
 private:
-  double *_values, *_lagrange, _step;
+  Cell* _cell;
+  //double *_values, *_lagrange, _step;
+  double _step;
   unsigned int _size;
-  bool _allocated, *_fixed;
+  //bool _allocated, *_fixed;
+  bool _allocated;
 
   int cellFromPos (double pos);
   double posFromCell (int cell);
