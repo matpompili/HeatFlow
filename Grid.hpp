@@ -20,22 +20,22 @@ public:
   void setTemperature(int i, int j, double t);
   void setTemperature(double x, double y, double t);
   void setAllTemperatures(double t);
-  void setFixed(int cell, bool f);
-  void setFixed(double pos, bool f);
+  void setFixed(int i, int j, bool f);
+  void setFixed(double x, double y, bool f);
   void setAllFixed(bool f);
 
-  double getTemperature(int cell);
-  double getTemperature(double pos);
-  double getLagrangian(int cell);
-  double getLagrangian(double pos);
-  bool getFixed(int cell);
-  bool getFixed(double pos);
+  double getTemperature(int i, int j);
+  double getTemperature(double x, double y);
+  double getLagrangian(int i, int j);
+  double getLagrangian(double x, double y);
+  bool getFixed(int i, int j);
+  bool getFixed(double x, double y);
   //double getLinearTemperature(double pos);
   //double getLinearLagrangian(double pos);
   int getSize() {return (int)_size;}
   double getStep() {return _step;}
 
-  Cell* getCell(int i, int j);
+
 
 private:
   Cell* _cell;
@@ -49,5 +49,6 @@ private:
   double posFromCell (int cell);
   void fixBounds();
   void evaluateLagrangian();
+  Cell* getCell(int i, int j);
 };
 #endif
