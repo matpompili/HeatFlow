@@ -1,2 +1,2 @@
 all:
-	g++ main.cpp Grid.cpp -o build/HeatFlow -lm
+	g++ *.cpp -o build/HeatFlow -lm

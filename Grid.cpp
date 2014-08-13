@@ -8,11 +8,8 @@ Grid::Grid(int size, double lenght) {
   }
   _size = abs(size);
   _step = lenght / size;
+  _time = 0.;
   _cell = (Cell*) calloc(_size * _size, sizeof(Cell));
-  //_values = (double*) calloc(_size + 2, sizeof(double));
-  //_lagrange = (double*) calloc(_size + 2, sizeof(double));
-  //_fixed = (bool*) calloc(_size + 2, sizeof(bool));
-  //if((_values != NULL) && (_lagrange != NULL) && (_fixed != NULL)) {
   if(_cell != NULL) {
     _allocated = true;
   } else {
@@ -23,27 +20,29 @@ Grid::Grid(int size, double lenght) {
 
 Grid::~Grid() {
   if(_allocated) {
-    //free(_values);
-    //free(_lagrange);
-    //free(_fixed);
     free(_cell);
   }
 }
 
 void Grid::nextStep(double dt) {
+  dt = fabs(dt);
+  _time += dt;
   this->evaluateLagrangian();
   double tTemp;
   for(int i = 0; i < _size; i++) {
     for(int j = 0; j < _size; j++) {
       if(!this->getCell(i,j)->fixed){
         tTemp  = this->getCell(i,j)->temperature;
-        tTemp += dt*this->getCell(i,j)->lagrange;
-        getCell(i,j)->temperature = tTemp;
+        tTemp += dt*this->getCell(i,j)->alfa*this->getCell(i,j)->lagrange;
+        this->getCell(i,j)->temperature = tTemp;
+      } else if (this->getCell(i,j)->func) {
+        double value = this->getCell(i,j)->tFunction->Oscillator(_time);
+        this->getCell(i,j)->temperature = value;
+        //std::fprintf(stderr, "value: %f\n", value);
       }
     }
   }
 }
-
 void Grid::setTemperature(int i, int j, double t) {
   this->getCell(i,j)->temperature = fabs(t);
   this->fixBounds();
@@ -51,7 +50,6 @@ void Grid::setTemperature(int i, int j, double t) {
 
 void Grid::setTemperature(double x, double y, double t) {
   this->setTemperature(cellFromPos(x), cellFromPos(y), t);
-  //this->setTemperature(cellFromPos(pos), t);
 }
 
 void Grid::setAllTemperatures(double t) {
@@ -77,6 +75,23 @@ void Grid::setAllFixed(bool f) {
     for(int j = 0; j < _size; j++) {
       this->getCell(i,j)->fixed = f;
     }
+  }
+}
+
+void Grid::setAllAlfas(double a) {
+  for(int i = 0; i < _size; i++) {
+    for(int j = 0; j < _size; j++) {
+      this->getCell(i,j)->alfa = a;
+    }
+  }
+}
+
+void Grid::setTemperatureFunc(int i, int j, Function *tf) {
+  this->getCell(i,j)->tFunction = tf;
+  this->getCell(i,j)->func = (tf==NULL)?false:true;
+  this->getCell(i,j)->fixed = (tf==NULL)?false:true;
+  if (tf==NULL) {
+    std::fprintf(stderr, "No func setted\n");
   }
 }
 
@@ -113,11 +128,6 @@ double Grid::posFromCell (int cell) {
 }
 
 void Grid::fixBounds() {
-  // for(size_t i = 0; i < _size; ++) {
-  //
-  // }
-  // _cell->temperature = (_cell + 1)->temperature;
-  // (_cell + _size + 1)->temperature = (_cell + _size)->temperature;
 }
 
 void Grid::evaluateLagrangian() {

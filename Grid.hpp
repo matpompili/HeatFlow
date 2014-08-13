@@ -2,12 +2,18 @@
 #define __GRID_HPP__
 
 #include <iostream>
+#include <cstdio>
 #include <stdlib.h>
 #include <cmath>
+#include "Function.hpp"
+
+typedef double (*fPtrType)(double);
 
 typedef struct {
   double temperature, lagrange, alfa;
-  bool fixed;
+  bool fixed, func;
+  //fPtrType tFunction;
+  Function *tFunction;
 } Cell;
 
 class Grid {
@@ -24,6 +30,10 @@ public:
   void setFixed(double x, double y, bool f);
   void setAllFixed(bool f);
 
+  void setAllAlfas(double a);
+
+  void setTemperatureFunc(int i, int j, Function *tf);
+
   double getTemperature(int i, int j);
   double getTemperature(double x, double y);
   double getLagrangian(int i, int j);
@@ -31,7 +41,7 @@ public:
   bool getFixed(int i, int j);
   bool getFixed(double x, double y);
   //double getLinearTemperature(double pos);
-  //double getLinearLagrangian(double pos);
+  //double gettLinearLagrangian(double pos);
   int getSize() {return (int)_size;}
   double getStep() {return _step;}
 
@@ -39,10 +49,8 @@ public:
 
 private:
   Cell* _cell;
-  //double *_values, *_lagrange, _step;
-  double _step;
+  double _step, _time;
   unsigned int _size;
-  //bool _allocated, *_fixed;
   bool _allocated;
 
   int cellFromPos (double pos);
