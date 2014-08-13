@@ -38,11 +38,21 @@ void Grid::nextStep(double dt) {
       } else if (this->getCell(i,j)->func) {
         double value = this->getCell(i,j)->tFunction->Oscillator(_time);
         this->getCell(i,j)->temperature = value;
-        //std::fprintf(stderr, "value: %f\n", value);
       }
     }
   }
 }
+
+void Grid::printGrid() {
+  for(int i = 0; i < 20; i++) {
+    for(int j = 0; j < 20; j++) {
+      std::cout << this->getCell(19-i,j)->temperature << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+}
+
 void Grid::setTemperature(int i, int j, double t) {
   this->getCell(i,j)->temperature = fabs(t);
   this->fixBounds();
@@ -180,5 +190,4 @@ Cell* Grid::getCell(int i, int j) {
     return NULL;
     //TODO: EXIT HERE AND ERROR
   }
-
 }

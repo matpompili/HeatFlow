@@ -12,7 +12,6 @@ typedef double (*fPtrType)(double);
 typedef struct {
   double temperature, lagrange, alfa;
   bool fixed, func;
-  //fPtrType tFunction;
   Function *tFunction;
 } Cell;
 
@@ -22,6 +21,7 @@ public:
   ~Grid();
 
   void nextStep(double dt);
+  void printGrid();
 
   void setTemperature(int i, int j, double t);
   void setTemperature(double x, double y, double t);
