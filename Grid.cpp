@@ -130,7 +130,7 @@ double Grid::posFromCell (int cell) {
 void Grid::fixBounds() {
 }
 
-void Grid::evaluateLagrangian() {
+void Grid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
   double tempLagr;
   for(int j = 0; j < _size; j++) {//Nabla X
     for(int i = 0; i < _size; i++) {
@@ -148,7 +148,7 @@ void Grid::evaluateLagrangian() {
         tempLagr -= 2.*this->getCell(i, j)->temperature;
         tempLagr += this->getCell(i-1, j)->temperature;
       }
-      this->getCell(i,j)->lagrange = tempLagr;
+      this->getCell(i,j)->lagrange = tempLagr / pow(_step,2.);
     }
   }
 
@@ -168,7 +168,7 @@ void Grid::evaluateLagrangian() {
         tempLagr -= 2.*this->getCell(i, j)->temperature;
         tempLagr += this->getCell(i, j-1)->temperature;
       }
-      this->getCell(i,j)->lagrange += tempLagr;
+      this->getCell(i,j)->lagrange += tempLagr / pow(_step,2.);
     }
   }
 }
