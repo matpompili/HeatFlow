@@ -8,7 +8,7 @@ HeatFlowGrid::HeatFlowGrid(int sizex, int sizey, double lenghtx) {
   }
   _sizex = abs(sizex);
   _sizey = abs(sizey);
-  _step = lenghtx / sizex;
+  _step = lenghtx / (double) _sizex;
   _time = 0.;
   _cell = (Cell*) calloc(_sizex * _sizey, sizeof(Cell));
   if(_cell != NULL) {
@@ -28,13 +28,13 @@ HeatFlowGrid::~HeatFlowGrid() {
 void HeatFlowGrid::nextStep(double dt) {
   dt = fabs(dt);
   _time += dt;
-  this->evaluateLagrangian();
+  this->evaluateLaplacian();
   double tTemp;
   for(int i = 0; i < _sizex; i++) {
     for(int j = 0; j < _sizey; j++) {
       if(!this->getCell(i,j)->fixed){
         tTemp  = this->getCell(i,j)->temperature;
-        tTemp += dt*this->getCell(i,j)->alfa*this->getCell(i,j)->lagrange;
+        tTemp += dt*this->getCell(i,j)->alfa*this->getCell(i,j)->laplacian;
         this->getCell(i,j)->temperature = tTemp;
       } else if (this->getCell(i,j)->func) {
         double value = this->getCell(i,j)->tFunction->Oscillator(_time);
@@ -53,6 +53,16 @@ void HeatFlowGrid::printGrid(){
     std::cout << std::endl;
   }
   std::cout << std::endl;
+
+  // #ifdef __DEGUB__
+  for(int j = 0; j < _sizey; j++) {
+    for(int i = 0; i < _sizex; i++) {
+      std::cout << this->getLaplacian(i, _sizey-1-j) << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+  // #endif
 }
 
 void HeatFlowGrid::setTemperature(int i, int j, double t) {
@@ -113,12 +123,12 @@ double HeatFlowGrid::getTemperature(double x, double y) {
   return this->getTemperature(cellFromPos(x), cellFromPos(y));
 }
 
-double HeatFlowGrid::getLagrangian(int i, int j) {
-  return this->getCell(i,j)->lagrange;
+double HeatFlowGrid::getLaplacian(int i, int j) {
+  return this->getCell(i,j)->laplacian;
 }
 
-double HeatFlowGrid::getLagrangian(double x, double y) {
-  return this->getLagrangian(cellFromPos(x), cellFromPos(y));
+double HeatFlowGrid::getLaplacian(double x, double y) {
+  return this->getLaplacian(cellFromPos(x), cellFromPos(y));
 }
 
 bool HeatFlowGrid::getFixed(int i, int j) {
@@ -137,7 +147,7 @@ double HeatFlowGrid::posFromCell (int cell) {
   return cell*_step + _step/2.;
 }
 
-void HeatFlowGrid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
+void HeatFlowGrid::evaluateLaplacian() { //https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
   double tempLagr;
   for(int j = 0; j < _sizey; j++) {//Nabla X
     for(int i = 0; i < _sizex; i++) {
@@ -155,7 +165,7 @@ void HeatFlowGrid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite
         tempLagr -= 2.*this->getCell(i, j)->temperature;
         tempLagr += this->getCell(i-1, j)->temperature;
       }
-      this->getCell(i,j)->lagrange = tempLagr / pow(_step,2.);
+      this->getCell(i,j)->laplacian = tempLagr / pow(_step,2.);
     }
   }
 
@@ -175,14 +185,14 @@ void HeatFlowGrid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite
         tempLagr -= 2.*this->getCell(i, j)->temperature;
         tempLagr += this->getCell(i, j-1)->temperature;
       }
-      this->getCell(i,j)->lagrange += tempLagr / pow(_step,2.);
+      this->getCell(i,j)->laplacian += tempLagr / pow(_step,2.);
     }
   }
 }
 
 Cell* HeatFlowGrid::getCell(int i, int j) {
   if ((i>=0 && i<_sizex)&&(j>=0 && j<_sizey)) {
-    return (_cell + _sizey * j + i);
+    return (_cell + _sizex * j + i);
   } else {
     return NULL;
     //TODO: EXIT HERE AND ERROR

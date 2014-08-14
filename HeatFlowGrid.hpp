@@ -8,7 +8,7 @@
 #include "HeatFlowFunction.hpp"
 
 typedef struct {
-  double temperature, lagrange, alfa;
+  double temperature, laplacian, alfa;
   bool fixed, func;
   //fPtrType tFunction;
   HeatFlowFunction *tFunction;
@@ -35,12 +35,12 @@ public:
 
   double getTemperature(int i, int j);
   double getTemperature(double x, double y);
-  double getLagrangian(int i, int j);
-  double getLagrangian(double x, double y);
+  double getLaplacian(int i, int j);
+  double getLaplacian(double x, double y);
   bool getFixed(int i, int j);
   bool getFixed(double x, double y);
   //double getLinearTemperature(double pos);
-  //double gettLinearLagrangian(double pos);
+  //double gettLinearLaplacian(double pos);
   int getSizeX() {return (int)_sizex;}
   int getSizeY() {return (int)_sizey;}
   double getStep() {return _step;}
@@ -55,7 +55,7 @@ private:
 
   int cellFromPos (double pos);
   double posFromCell (int cell);
-  void evaluateLagrangian();
+  void evaluateLaplacian();
   Cell* getCell(int i, int j);
 };
 #endif
