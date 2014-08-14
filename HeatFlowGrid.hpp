@@ -50,7 +50,7 @@ public:
 private:
   Cell* _cell;
   double _step, _time;
-  unsigned int _sizex, _sizey;
+  int _sizex, _sizey;
   bool _allocated;
 
   int cellFromPos (double pos);
