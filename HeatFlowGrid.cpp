@@ -44,6 +44,17 @@ void HeatFlowGrid::nextStep(double dt) {
     }
   }
 }
+
+void HeatFlowGrid::printGrid(){
+  for(int j = 0; j < _sizey; j++) {
+    for(int i = 0; i < _sizex; i++) {
+      std::cout << linTest->getTemperature(i, _sizey-1-j) << " ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+}
+
 void HeatFlowGrid::setTemperature(int i, int j, double t) {
   this->getCell(i,j)->temperature = fabs(t);
   this->fixBounds();

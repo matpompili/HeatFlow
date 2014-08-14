@@ -20,6 +20,7 @@ public:
   ~HeatFlowGrid();
 
   void nextStep(double dt);
+  void printGrid();
 
   void setTemperature(int i, int j, double t);
   void setTemperature(double x, double y, double t);
