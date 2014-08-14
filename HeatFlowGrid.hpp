@@ -16,7 +16,7 @@ typedef struct {
 
 class HeatFlowGrid {
 public:
-  HeatFlowGrid(int size, double lenght);
+  HeatFlowGrid(int sizex, int sizey, double lenghtx);
   ~HeatFlowGrid();
 
   void nextStep(double dt);
@@ -48,12 +48,12 @@ public:
 private:
   Cell* _cell;
   double _step, _time;
-  unsigned int _size;
+  unsigned int _sizex, _sizey;
   bool _allocated;
 
   int cellFromPos (double pos);
   double posFromCell (int cell);
-  void fixBounds();
+  //void fixBounds();
   void evaluateLagrangian();
   Cell* getCell(int i, int j);
 };
