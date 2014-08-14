@@ -3,8 +3,8 @@
 #include "HeatFlowFunction.hpp"
 #include <cmath>
 
-int main() {
-  HeatFlowGrid *linTest = new HeatFlowGrid(20, 1.);
+int main(int argc, char** argv) {
+  HeatFlowGrid *linTest = new HeatFlowGrid(atoi(argv[1]), atoi(argv[2]), atof(argv[3]));
   linTest->setAllTemperatures(300.);
   linTest->setAllAlfas(2.3E-5); //Iron
   // for(int i = 0; i < 20; i++)
@@ -30,19 +30,13 @@ int main() {
   //linTest->setFixed(10, 10, true);
   //linTest->setFixed(19, true);
   //linTest->setFixed(5,true);
-  double dt = 0.01;
-  int count = 0;
-  while (count < 1000) {
-    for(int i = 0; i < 20; i++) {
-      for(int j = 0; j < 20; j++) {
-        std::cout << linTest->getTemperature(19-i, j) << " ";
-      }
-      std::cout << std::endl;
+  double dt = atof(argv[5]);
+  int steps = ceil(atof(argv[4])/dt);
+  while (steps > 0) {
+    if(steps % 50 == 0) {
+      linTest->printGrid();
     }
-    std::cout << std::endl;
-    for(size_t i = 0; i < 50; i++){
-      linTest->nextStep(dt);
-    }
-    count++;
+    linTest->nextStep(dt);
+    steps--;
   }
 }
