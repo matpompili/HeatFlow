@@ -4,7 +4,7 @@
 #include <cmath>
 
 int main() {
-  HeatFlowGrid *linTest = new Grid(20, 1.);
+  HeatFlowGrid *linTest = new HeatFlowGrid(20, 1.);
   linTest->setAllTemperatures(300.);
   linTest->setAllAlfas(2.3E-5); //Iron
   // for(int i = 0; i < 20; i++)
@@ -18,7 +18,7 @@ int main() {
   //   linTest->setFixed(i, 19, true);
   // }
 
-  HeatFlowFunction *func1 = new Function(.1, 20, 0, 310);
+  HeatFlowFunction *func1 = new HeatFlowFunction(.1, 20, 0, 310);
 
   linTest->setTemperatureFunc(10,10, func1);
   // linTest->setTemperatureFunc(2,2, func1);

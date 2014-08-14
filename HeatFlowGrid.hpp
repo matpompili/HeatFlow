@@ -5,15 +5,13 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <cmath>
-#include "Function.hpp"
-
-typedef double (*fPtrType)(double);
+#include "HeatFlowFunction.hpp"
 
 typedef struct {
   double temperature, lagrange, alfa;
   bool fixed, func;
   //fPtrType tFunction;
-  Function *tFunction;
+  HeatFlowFunction *tFunction;
 } Cell;
 
 class HeatFlowGrid {
@@ -32,7 +30,7 @@ public:
 
   void setAllAlfas(double a);
 
-  void setTemperatureFunc(int i, int j, Function *tf);
+  void setTemperatureFunc(int i, int j, HeatFlowFunction *tf);
 
   double getTemperature(int i, int j);
   double getTemperature(double x, double y);

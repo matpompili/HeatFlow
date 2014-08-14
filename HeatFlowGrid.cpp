@@ -86,7 +86,7 @@ void HeatFlowGrid::setAllAlfas(double a) {
   }
 }
 
-void HeatFlowGrid::setTemperatureFunc(int i, int j, Function *tf) {
+void HeatFlowGrid::setTemperatureFunc(int i, int j, HeatFlowFunction *tf) {
   this->getCell(i,j)->tFunction = tf;
   this->getCell(i,j)->func = (tf==NULL)?false:true;
   this->getCell(i,j)->fixed = (tf==NULL)?false:true;
