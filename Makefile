@@ -1,2 +1,2 @@
 all:
-	g++ HeatFlow*.cpp main.cpp -o build/HeatFlow -lm
+	g++ -Wall -g -pedantic *.cpp -o build/HeatFlow -lm
