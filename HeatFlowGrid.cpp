@@ -151,32 +151,44 @@ void HeatFlowGrid::evaluateLaplacian() { //https://en.wikipedia.org/wiki/Finite_
 }
 
 Cell* HeatFlowGrid::getCell(int i, int j) {
-  if (i < 0) {
-    if (j>=0 && j<_sizey) {
-      return (_cell + _sizex * j);
-    } else if (j<0) {
-      return (_cell);
-    } else {
-      return (_cell + _sizex * (_sizey-1));
-    }
-  } else if (i>=0 && i<_sizex) {
-    if (j>=0 && j<_sizey) {
-      return (_cell + _sizex * j + i);
-    } else if (j<0) {
-      return (_cell + i);
-    } else {
-      return (_cell + _sizex * (_sizey-1) + i);
-    }
+  if ((i>=0 && i<_sizex)&&(j>=0 && j<_sizey)) {
+    return (_cell + _sizex * j + i);
+  } else if (i<0) {
+    return this->getCell(0,j);
   } else if (i>=_sizex) {
-    if (j>=0 && j<_sizey) {
-      return (_cell + _sizex * j + _sizex-1);
-    } else if (j<0) {
-      return (_cell + _sizex-1);
-    } else {
-      return (_cell + _sizex * (_sizey-1) + _sizex-1);
-    }
-  } else {
-    return NULL;
-    //TODO: EXIT HERE AND ERROR: WHAT THE HELL?
+    return this->getCell(_sizex-1,j);
+  } else if (j<0) {
+    return this->getCell(i,0);
+  } else (j>=_sizey) {
+    return this->getCell(i,_sizey-1);
   }
+  //
+  // if (i < 0) {
+  //   if (j>=0 && j<_sizey) {
+  //     return (_cell + _sizex * j);
+  //   } else if (j<0) {
+  //     return (_cell);
+  //   } else {
+  //     return (_cell + _sizex * (_sizey-1));
+  //   }
+  // } else if (i>=0 && i<_sizex) {
+  //   if (j>=0 && j<_sizey) {
+  //     return (_cell + _sizex * j + i);
+  //   } else if (j<0) {
+  //     return (_cell + i);
+  //   } else {
+  //     return (_cell + _sizex * (_sizey-1) + i);
+  //   }
+  // } else if (i>=_sizex) {
+  //   if (j>=0 && j<_sizey) {
+  //     return (_cell + _sizex * j + _sizex-1);
+  //   } else if (j<0) {
+  //     return (_cell + _sizex-1);
+  //   } else {
+  //     return (_cell + _sizex * (_sizey-1) + _sizex-1);
+  //   }
+  // } else {
+  //   return NULL;
+  //   //TODO: EXIT HERE AND ERROR: WHAT THE HELL?
+  // }
 }
