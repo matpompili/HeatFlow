@@ -1,12 +1,14 @@
 #include <iostream>
-#include "Grid.hpp"
-#include "Function.hpp"
+#include "HeatFlowGrid.hpp"
+#include "HeatFlowFunction.hpp"
 #include <cmath>
 
-int main() {
-  Grid *linTest = new Grid(20, 1.);
+int main(int argc, char** argv) {
+  HeatFlowGrid *linTest = new HeatFlowGrid(atoi(argv[1]), atoi(argv[2]), atof(argv[3]));
   linTest->setAllTemperatures(300.);
   linTest->setAllAlfas(2.3E-5); //Iron
+  linTest->setTemperature(0,0,330.);
+  linTest->setFixed(0,0,true);
   // for(int i = 0; i < 20; i++)
   // {
   //   linTest->setTemperature(i, 0, 330.);
@@ -18,9 +20,9 @@ int main() {
   //   linTest->setFixed(i, 19, true);
   // }
 
-  Function *func1 = new Function(.1, 20, 0, 310);
+  //HeatFlowFunction *func1 = new HeatFlowFunction(.1, 20, 0, 310);
 
-  linTest->setTemperatureFunc(10,10, func1);
+  //linTest->setTemperatureFunc(10,10, func1);
   // linTest->setTemperatureFunc(2,2, func1);
   //
   // Function *func2 = new Function(.05, 30, M_PI, 300);
@@ -30,19 +32,13 @@ int main() {
   //linTest->setFixed(10, 10, true);
   //linTest->setFixed(19, true);
   //linTest->setFixed(5,true);
-  double dt = 0.01;
-  int count = 0;
-  while (count < 1000) {
-    for(int i = 0; i < 20; i++) {
-      for(int j = 0; j < 20; j++) {
-        std::cout << linTest->getTemperature(19-i, j) << " ";
-      }
-      std::cout << std::endl;
+  double dt = atof(argv[5]);
+  int steps = ceil(atof(argv[4])/dt);
+  while (steps > 0) {
+    if(steps % 50 == 0) {
+      linTest->printGrid();
     }
-    std::cout << std::endl;
-    for(size_t i = 0; i < 50; i++){
-      linTest->nextStep(dt);
-    }
-    count++;
+    linTest->nextStep(dt);
+    steps--;
   }
 }

@@ -1,24 +1,23 @@
-#ifndef __GRID_HPP__
-#define __GRID_HPP__
+#ifndef __HEATFLOWGRID_HPP__
+#define __HEATFLOWGRID_HPP__
 
 #include <iostream>
 #include <cstdio>
 #include <stdlib.h>
 #include <cmath>
-#include "Function.hpp"
-
-typedef double (*fPtrType)(double);
+#include "HeatFlowFunction.hpp"
 
 typedef struct {
   double temperature, lagrange, alfa;
   bool fixed, func;
-  Function *tFunction;
+  //fPtrType tFunction;
+  HeatFlowFunction *tFunction;
 } Cell;
 
-class Grid {
+class HeatFlowGrid {
 public:
-  Grid(int size, double lenght);
-  ~Grid();
+  HeatFlowGrid(int sizex, int sizey, double lenghtx);
+  ~HeatFlowGrid();
 
   void nextStep(double dt);
   void printGrid();
@@ -32,7 +31,7 @@ public:
 
   void setAllAlfas(double a);
 
-  void setTemperatureFunc(int i, int j, Function *tf);
+  void setTemperatureFunc(int i, int j, HeatFlowFunction *tf);
 
   double getTemperature(int i, int j);
   double getTemperature(double x, double y);
@@ -42,7 +41,8 @@ public:
   bool getFixed(double x, double y);
   //double getLinearTemperature(double pos);
   //double gettLinearLagrangian(double pos);
-  int getSize() {return (int)_size;}
+  int getSizeX() {return (int)_sizex;}
+  int getSizeY() {return (int)_sizey;}
   double getStep() {return _step;}
 
 
@@ -50,12 +50,12 @@ public:
 private:
   Cell* _cell;
   double _step, _time;
-  unsigned int _size;
+  unsigned int _sizex, _sizey;
   bool _allocated;
 
   int cellFromPos (double pos);
   double posFromCell (int cell);
-  void fixBounds();
+  //void fixBounds();
   void evaluateLagrangian();
   Cell* getCell(int i, int j);
 };
