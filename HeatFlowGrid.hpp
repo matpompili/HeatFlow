@@ -1,5 +1,5 @@
-#ifndef __GRID_HPP__
-#define __GRID_HPP__
+#ifndef __HEATFLOWGRID_HPP__
+#define __HEATFLOWGRID_HPP__
 
 #include <iostream>
 #include <cstdio>
@@ -16,10 +16,10 @@ typedef struct {
   Function *tFunction;
 } Cell;
 
-class Grid {
+class HeatFlowGrid {
 public:
-  Grid(int size, double lenght);
-  ~Grid();
+  HeatFlowGrid(int size, double lenght);
+  ~HeatFlowGrid();
 
   void nextStep(double dt);
 
