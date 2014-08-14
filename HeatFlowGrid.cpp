@@ -3,7 +3,7 @@
 using namespace std;
 
 HeatFlowGrid::HeatFlowGrid(int sizex, int sizey, double lenghtx) {
-  if ((sizex * sizey == 0) || (lenght == 0)) {
+  if ((sizex * sizey == 0) || (lenghtx == 0)) {
     //TODO: EXIT HERE AND ERROR
   }
   _sizex = abs(sizex);
@@ -48,7 +48,7 @@ void HeatFlowGrid::nextStep(double dt) {
 void HeatFlowGrid::printGrid(){
   for(int j = 0; j < _sizey; j++) {
     for(int i = 0; i < _sizex; i++) {
-      std::cout << linTest->getTemperature(i, _sizey-1-j) << " ";
+      std::cout << this->getTemperature(i, _sizey-1-j) << " ";
     }
     std::cout << std::endl;
   }
@@ -57,7 +57,7 @@ void HeatFlowGrid::printGrid(){
 
 void HeatFlowGrid::setTemperature(int i, int j, double t) {
   this->getCell(i,j)->temperature = fabs(t);
-  this->fixBounds();
+  //this->fixBounds();
 }
 
 void HeatFlowGrid::setTemperature(double x, double y, double t) {
@@ -71,7 +71,7 @@ void HeatFlowGrid::setAllTemperatures(double t) {
       this->getCell(i,j)->temperature = t;
     }
   }
-  this->fixBounds();
+  //this->fixBounds();
 }
 
 void HeatFlowGrid::setFixed(int i, int j, bool f) {
@@ -150,7 +150,7 @@ void HeatFlowGrid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite
         tempLagr  = this->getCell(i+2, j)->temperature;
         tempLagr -= 2.*this->getCell(i+1, j)->temperature;
         tempLagr += this->getCell(i, j)->temperature;
-      } else if (i == _size-1) { //right border -- backward
+      } else if (i == _sizex-1) { //right border -- backward
         //TODO: Check Math!
         tempLagr  = this->getCell(i, j)->temperature;
         tempLagr -= 2.*this->getCell(i-1, j)->temperature;
@@ -170,7 +170,7 @@ void HeatFlowGrid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite
         tempLagr  = this->getCell(i, j+2)->temperature;
         tempLagr -= 2.*this->getCell(i, j+1)->temperature;
         tempLagr += this->getCell(i, j)->temperature;
-      } else if (j == _size-1) { //upper border -- backward
+      } else if (j == _sizey-1) { //upper border -- backward
         //TODO: Check Math!
         tempLagr  = this->getCell(i, j)->temperature;
         tempLagr -= 2.*this->getCell(i, j-1)->temperature;

@@ -41,7 +41,8 @@ public:
   bool getFixed(double x, double y);
   //double getLinearTemperature(double pos);
   //double gettLinearLagrangian(double pos);
-  int getSize() {return (int)_size;}
+  int getSizeX() {return (int)_sizex;}
+  int getSizeY() {return (int)_sizey;}
   double getStep() {return _step;}
 
 
