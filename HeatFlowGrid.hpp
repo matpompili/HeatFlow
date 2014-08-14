@@ -55,7 +55,6 @@ private:
 
   int cellFromPos (double pos);
   double posFromCell (int cell);
-  //void fixBounds();
   void evaluateLagrangian();
   Cell* getCell(int i, int j);
 };

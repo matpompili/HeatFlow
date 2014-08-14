@@ -57,7 +57,6 @@ void HeatFlowGrid::printGrid(){
 
 void HeatFlowGrid::setTemperature(int i, int j, double t) {
   this->getCell(i,j)->temperature = fabs(t);
-  //this->fixBounds();
 }
 
 void HeatFlowGrid::setTemperature(double x, double y, double t) {
@@ -71,7 +70,6 @@ void HeatFlowGrid::setAllTemperatures(double t) {
       this->getCell(i,j)->temperature = t;
     }
   }
-  //this->fixBounds();
 }
 
 void HeatFlowGrid::setFixed(int i, int j, bool f) {
@@ -139,9 +137,6 @@ double HeatFlowGrid::posFromCell (int cell) {
   return cell*_step + _step/2.;
 }
 
-// void HeatFlowGrid::fixBounds() {
-// }
-
 void HeatFlowGrid::evaluateLagrangian() { //https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
   double tempLagr;
   for(int j = 0; j < _sizey; j++) {//Nabla X
@@ -192,5 +187,4 @@ Cell* HeatFlowGrid::getCell(int i, int j) {
     return NULL;
     //TODO: EXIT HERE AND ERROR
   }
-
 }
