@@ -1,4 +1,5 @@
 /build
+/plots
 
 # Compiled Object files
 *.slo
