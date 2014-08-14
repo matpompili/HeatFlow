@@ -150,58 +150,97 @@ double HeatFlowGrid::posFromCell (int cell) {
 
 void HeatFlowGrid::evaluateLaplacian() { //https://en.wikipedia.org/wiki/Finite_difference#Higher-order_differences
   double tempLagr;
-  for(int j = 0; j < _sizey; j++) {//Nabla X
+  // for(int j = 0; j < _sizey; j++) {//Nabla X
+  //   for(int i = 0; i < _sizex; i++) {
+  //     if (i == 0) { //left border -- forward
+  //       tempLagr  = this->getCell(i+1, j)->temperature;
+  //       tempLagr -= this->getCell(i, j)->temperature;
+  //       //tempLagr += this->getCell(i, j)->temperature;
+  //     } else if (i == _sizex-1) { //right border -- backward
+  //       //TODO: Check Math!
+  //       tempLagr  = this->getCell(i-1, j)->temperature;
+  //       tempLagr -= this->getCell(i, j)->temperature;
+  //       //tempLagr += this->getCell(i-2, j)->temperature;
+  //     } else { //others -- central
+  //       tempLagr  = this->getCell(i+1, j)->temperature;
+  //       tempLagr -= 2.*this->getCell(i, j)->temperature;
+  //       tempLagr += this->getCell(i-1, j)->temperature;
+  //     }
+  //     this->getCell(i,j)->laplacian = tempLagr;
+  //   }
+  // }
+  //
+  // for(int i = 0; i < _sizex; i++) {//Nabla Y
+  //   for(int j = 0; j < _sizey; j++) {
+  //     if (j == 0) { //bottom border -- forward
+  //       tempLagr  = this->getCell(i, j+1)->temperature;
+  //       tempLagr -= this->getCell(i, j)->temperature;
+  //       //tempLagr += this->getCell(i, j)->temperature;
+  //     } else if (j == _sizey-1) { //upper border -- backward
+  //       //TODO: Check Math!
+  //       tempLagr  = this->getCell(i, j-1)->temperature;
+  //       tempLagr -= this->getCell(i, j)->temperature;
+  //       //tempLagr += this->getCell(i, j-2)->temperature;
+  //     } else { //others -- central
+  //       tempLagr  = this->getCell(i, j+1)->temperature;
+  //       tempLagr -= 2.*this->getCell(i, j)->temperature;
+  //       tempLagr += this->getCell(i, j-1)->temperature;
+  //     }
+  //     this->getCell(i,j)->laplacian += tempLagr;
+  //   }
+  // }
+
+  for(int j = 0; j < _sizey; j++) {//d2x + d2y
     for(int i = 0; i < _sizex; i++) {
-      if (i == 0) { //left border -- forward
-        tempLagr  = this->getCell(i+1, j)->temperature;
-        tempLagr -= this->getCell(i, j)->temperature;
-        //tempLagr += this->getCell(i, j)->temperature;
-      } else if (i == _sizex-1) { //right border -- backward
-        //TODO: Check Math!
-        tempLagr  = this->getCell(i-1, j)->temperature;
-        tempLagr -= this->getCell(i, j)->temperature;
-        //tempLagr += this->getCell(i-2, j)->temperature;
-      } else { //others -- central
-        tempLagr  = this->getCell(i+1, j)->temperature;
-        tempLagr -= 2.*this->getCell(i, j)->temperature;
-        tempLagr += this->getCell(i-1, j)->temperature;
-      }
-      this->getCell(i,j)->laplacian = tempLagr;
+      tempLagr = -5.*this->getCell(i, j)->temperature;
+      tempLagr += 4./3. * (this->getCell(i-1,j)->temperature + this->getCell(i+1,j)->temperature);
+      tempLagr += -1./12. * (this->getCell(i-2,j)->temperature + this->getCell(i+2,j)->temperature);
+      tempLagr += 4./3. * (this->getCell(i,j-1)->temperature + this->getCell(i,j+1)->temperature);
+      tempLagr += -1./12. * (this->getCell(i,j-2)->temperature + this->getCell(i,j+2)->temperature);
+      this->getCell(i,j)->laplacian = tempLagr / pow(_step, 2.);
     }
   }
 
-  for(int i = 0; i < _sizex; i++) {//Nabla Y
-    for(int j = 0; j < _sizey; j++) {
-      if (j == 0) { //bottom border -- forward
-        tempLagr  = this->getCell(i, j+1)->temperature;
-        tempLagr -= this->getCell(i, j)->temperature;
-        //tempLagr += this->getCell(i, j)->temperature;
-      } else if (j == _sizey-1) { //upper border -- backward
-        //TODO: Check Math!
-        tempLagr  = this->getCell(i, j-1)->temperature;
-        tempLagr -= this->getCell(i, j)->temperature;
-        //tempLagr += this->getCell(i, j-2)->temperature;
-      } else { //others -- central
-        tempLagr  = this->getCell(i, j+1)->temperature;
-        tempLagr -= 2.*this->getCell(i, j)->temperature;
-        tempLagr += this->getCell(i, j-1)->temperature;
-      }
-      this->getCell(i,j)->laplacian += tempLagr;
-    }
-  }
-
-  for(int i = 0; i < _sizex; i++) {//Divide it
-    for(int j = 0; j < _sizey; j++) {
-      this->getCell(i,j)->laplacian /= pow(_step, 2.);
-    }
-  }
+  // for(int i = 0; i < _sizex; i++) {//Divide it
+  //   for(int j = 0; j < _sizey; j++) {
+  //     this->getCell(i,j)->laplacian /= pow(_step, 2.);
+  //   }
+  // }
 }
 
 Cell* HeatFlowGrid::getCell(int i, int j) {
-  if ((i>=0 && i<_sizex)&&(j>=0 && j<_sizey)) {
-    return (_cell + _sizex * j + i);
+  // if ((i>=0 && i<_sizex)&&(j>=0 && j<_sizey)) {
+  //   return (_cell + _sizex * j + i);
+  // } else {
+  //   return NULL;
+  //   //TODO: EXIT HERE AND ERROR
+  // } else
+  if (i < 0) {
+    if (j>=0 && j<_sizey) {
+      return (_cell + _sizex * j);
+    } else if (j<0) {
+      return (_cell);
+    } else {
+      return (_cell + _sizex * (_sizey-1));
+    }
+  } else if (i>=0 && i<_sizex) {
+    if (j>=0 && j<_sizey) {
+      return (_cell + _sizex * j + i);
+    } else if (j<0) {
+      return (_cell + i);
+    } else {
+      return (_cell + _sizex * (_sizey-1) + i);
+    }
+  } else if (i>=_sizex) {
+    if (j>=0 && j<_sizey) {
+      return (_cell + _sizex * j + _sizex-1);
+    } else if (j<0) {
+      return (_cell + _sizex-1);
+    } else {
+      return (_cell + _sizex * (_sizey-1) + _sizex-1);
+    }
   } else {
     return NULL;
-    //TODO: EXIT HERE AND ERROR
+    //TODO: EXIT HERE AND ERROR: WHAT THE HELL?
   }
 }
