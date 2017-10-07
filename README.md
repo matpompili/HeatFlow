@@ -1,4 +1,4 @@
 HeatFlow
 ========
 
-A C++ Termodynamic systems simulator
+A C++ Thermodynamic systems simulator
